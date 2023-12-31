@@ -1,4 +1,4 @@
-package kukekyakya.kukemarket.controller.response;
+package kukekyakya.kukemarket.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
