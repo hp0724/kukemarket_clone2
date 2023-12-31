@@ -73,7 +73,7 @@ class JwtHandlerTest {
     }
 
     private String createToken(String encodedKey, String subject, long maxAgeSeconds) {
-        return jwtHandler.crateToken(
+        return jwtHandler.createToken(
                 encodedKey,
                 subject,
                 maxAgeSeconds);

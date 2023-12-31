@@ -1,7 +1,6 @@
 package kukekyakya.kukemarket.handler;
 
 import io.jsonwebtoken.*;
-import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -10,7 +9,7 @@ import java.util.Date;
 public class JwtHandler {
     private String type = "Bearer ";
 
-    public String crateToken(String encodedKey,String subject, long maxAgeSeconds){
+    public String createToken(String encodedKey, String subject, long maxAgeSeconds){
         Date now =new Date();
         return type+ Jwts.builder()
                 .setSubject(subject)
