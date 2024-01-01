@@ -15,6 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static kukekyakya.kukemarket.factory.dto.SignInRequestFactory.createSignInRequest;
+import static kukekyakya.kukemarket.factory.dto.SignInResponseFactory.createSignInResponse;
+import static kukekyakya.kukemarket.factory.dto.SignUpRequestFactory.createSignUpRequest;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -37,7 +40,7 @@ class SignControllerTest {
     @Test
     void signUpTest() throws Exception {
         // given
-        SignUpRequest req = new SignUpRequest("email@email.com", "123456a!", "username", "nickname");
+        SignUpRequest req =  createSignUpRequest();
 
         // when, then
         mockMvc.perform(
@@ -52,8 +55,8 @@ class SignControllerTest {
     @Test
     void signInTest() throws Exception {
         // given
-        SignInRequest req = new SignInRequest("email@email.com", "123456a!");
-        given(signService.signIn(req)).willReturn(new SignInResponse("access", "refresh"));
+        SignInRequest req = createSignInRequest();
+        given(signService.signIn(req)).willReturn(createSignInResponse("accessToken",  "refreshToken"));
 
         // when, then
         mockMvc.perform(
@@ -61,8 +64,8 @@ class SignControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.result.data.accessToken").value("access")) // 3
-                .andExpect(jsonPath("$.result.data.refreshToken").value("refresh"));
+                .andExpect(jsonPath("$.result.data.accessToken").value("accessToken")) // 3
+                .andExpect(jsonPath("$.result.data.refreshToken").value("refreshToken"));
 
         verify(signService).signIn(req);
     }
@@ -70,7 +73,7 @@ class SignControllerTest {
     @Test
     void ignoreNullValueInJsonResponseTest() throws Exception { // 4
         // given
-        SignUpRequest req = new SignUpRequest("email@email.com", "123456a!", "username", "nickname");
+        SignUpRequest req = createSignUpRequest("email@email.com", "123456a!", "username", "nickname");
 
         // when, then
         mockMvc.perform(

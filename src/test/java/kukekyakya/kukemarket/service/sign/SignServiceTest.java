@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
+import static kukekyakya.kukemarket.factory.entity.MemberFactory.createMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -126,7 +127,4 @@ public class SignServiceTest {
         return new SignUpRequest("email", "password", "username", "nickname");
     }
 
-    private Member createMember() {
-        return new Member("email", "password", "username", "nickname", emptyList());
-    }
 }
