@@ -1,5 +1,6 @@
 package kukekyakya.kukemarket.service.sign;
 
+import kukekyakya.kukemarket.config.token.TokenHelper;
 import kukekyakya.kukemarket.dto.sign.RefreshTokenResponse;
 import kukekyakya.kukemarket.dto.sign.SignInResponse;
 import kukekyakya.kukemarket.dto.sign.SignUpRequest;
@@ -22,7 +23,8 @@ public class SignService {
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenService tokenService;
+    private final TokenHelper accessTokenHelper;
+    private final TokenHelper refreshTokenHelper;
 
     @Transactional
     public void signUp(SignUpRequest req){
@@ -37,9 +39,23 @@ public class SignService {
         Member member=memberRepository.findByEmail(req.getEmail()).orElseThrow(LoginFailureException::new);
         validatePassword(req,member);
         String subject = createSubject(member);
-        String accessToken = tokenService.createAccessToken(subject);
-        String refreshToken = tokenService.createRefreshToken(subject);
+        String accessToken = accessTokenHelper.createToken(subject);
+        String refreshToken = refreshTokenHelper.createToken(subject);
         return new SignInResponse(accessToken,refreshToken);
+    }
+
+    //refresh token 에서 subject 추출해서 새로운 엑세스 토큰 발급
+    public RefreshTokenResponse refreshToken(String rToken){
+        validateRefreshToken(rToken);
+        String subject = refreshTokenHelper.extractSubject(rToken);
+        String accessToken = accessTokenHelper.createToken(subject);
+        return new RefreshTokenResponse(accessToken);
+    }
+    private void validateRefreshToken(String rToken){
+        //refresh token 유효하지 않은 경우 예외 처리
+        if(!refreshTokenHelper.validate(rToken)){
+            throw new AuthenticationEntryPointException();
+        }
     }
 
     //이메일과 닉네임의 중복섬 검사
@@ -49,7 +65,6 @@ public class SignService {
         if(memberRepository.existsByNickname(req.getNickname()))
             throw new MemberNicknameAlreadyExistsException(req.getNickname());
     }
-
     private void validatePassword(SignInRequest req,Member member){
         if(!passwordEncoder.matches(req.getPassword(),member.getPassword())){
             throw new LoginFailureException();
@@ -61,17 +76,4 @@ public class SignService {
         return String.valueOf(member.getId());
     }
 
-    //refresh token 에서 subject 추출해서 새로운 엑세스 토큰 발급
-    public RefreshTokenResponse refreshToken(String rToken){
-        validateRefreshToken(rToken);
-        String subject = tokenService.extractRefreshTokenSubject(rToken);
-        String accessToken = tokenService.createAccessToken(subject);
-        return new RefreshTokenResponse(accessToken);
-    }
-    private void validateRefreshToken(String rToken){
-        //refresh token 유효하지 않은 경우 예외 처리
-        if(!tokenService.validateRefreshToken(rToken)){
-            throw new AuthenticationEntryPointException();
-        }
-    }
 }

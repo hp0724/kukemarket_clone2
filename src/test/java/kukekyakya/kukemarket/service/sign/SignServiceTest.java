@@ -1,5 +1,6 @@
 package kukekyakya.kukemarket.service.sign;
 
+import kukekyakya.kukemarket.config.token.TokenHelper;
 import kukekyakya.kukemarket.dto.sign.RefreshTokenResponse;
 import kukekyakya.kukemarket.dto.sign.SignInRequest;
 import kukekyakya.kukemarket.dto.sign.SignInResponse;
@@ -10,6 +11,7 @@ import kukekyakya.kukemarket.entity.member.RoleType;
 import kukekyakya.kukemarket.exception.*;
 import kukekyakya.kukemarket.repository.member.MemberRepository;
 import kukekyakya.kukemarket.repository.role.RoleRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,7 +32,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class SignServiceTest {
-    @InjectMocks SignService signService;
+    SignService signService;
     @Mock
     MemberRepository memberRepository;
     @Mock
@@ -38,7 +40,17 @@ public class SignServiceTest {
     @Mock
     PasswordEncoder passwordEncoder;
     @Mock
-    TokenService tokenService;
+    TokenHelper accessTokenHelper;
+    @Mock
+    TokenHelper refreshTokenHelper;
+
+    //통일한 타입의 @Mock 에 대해서 제대로 인식하지 못하기에 InjectMock 대신 @Mock으로 만들어진
+    //의존성을 직접 지정해준다.
+    @BeforeEach
+    void beforeEach() {
+        signService = new SignService(memberRepository, roleRepository, passwordEncoder, accessTokenHelper, refreshTokenHelper);
+    }
+
 
     @Test
     void signUpTest() {
@@ -88,8 +100,8 @@ public class SignServiceTest {
         // given
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(createMember()));
         given(passwordEncoder.matches(anyString(), anyString())).willReturn(true);
-        given(tokenService.createAccessToken(anyString())).willReturn("access");
-        given(tokenService.createRefreshToken(anyString())).willReturn("refresh");
+        given(accessTokenHelper.createToken(anyString())).willReturn("access");
+        given(refreshTokenHelper.createToken(anyString())).willReturn("refresh");
 
         // when
         SignInResponse res = signService.signIn(new SignInRequest("email", "password"));
@@ -126,9 +138,9 @@ public class SignServiceTest {
         String refreshToken = "refreshToken";
         String subject = "subject";
         String accessToken = "accessToken";
-        given(tokenService.validateRefreshToken(refreshToken)).willReturn(true);
-        given(tokenService.extractRefreshTokenSubject(refreshToken)).willReturn(subject);
-        given(tokenService.createAccessToken(subject)).willReturn(accessToken);
+        given(refreshTokenHelper.validate(refreshToken)).willReturn(true);
+        given(refreshTokenHelper.extractSubject(refreshToken)).willReturn(subject);
+        given(accessTokenHelper.createToken(subject)).willReturn(accessToken);
 
         // when
         RefreshTokenResponse res = signService.refreshToken(refreshToken);
@@ -141,7 +153,7 @@ public class SignServiceTest {
     void refreshTokenExceptionByInvalidTokenTest() {
         // given
         String refreshToken = "refreshToken";
-        given(tokenService.validateRefreshToken(refreshToken)).willReturn(false);
+        given(refreshTokenHelper.validate(refreshToken)).willReturn(false);
 
         // when, then
         assertThatThrownBy(() -> signService.refreshToken(refreshToken))
