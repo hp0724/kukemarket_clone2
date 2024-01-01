@@ -18,15 +18,15 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     private final TokenService tokenService;
     private final CustomUserDetailsService userDetailsService;
 
+
+    //refresh
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         //토큰값을 꺼내오고
         String token = extractToken(request);
 
-        if(validateAccessToken(token)) {
-            setAccessAuthentication("access", token);
-        } else if(validateRefreshToken(token)) {
-            setRefreshAuthentication("refresh", token);
+        if(validateToken(token)) {
+            setAuthentication(token);
         }
         chain.doFilter(request, response);
     }
@@ -35,25 +35,19 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         return ((HttpServletRequest)request).getHeader("Authorization");
     }
 
-    private boolean validateAccessToken(String token) {
+    private boolean validateToken(String token) {
         return token != null && tokenService.validateAccessToken(token);
     }
 
-    private boolean validateRefreshToken(String token) {
-        return token != null && tokenService.validateRefreshToken(token);
-    }
+
 
     //컨텍스트에 토큰에서 꺼내온 사용자 id를 이용한 사용자 정보를 넣어준다.
-    private void setAccessAuthentication(String type, String token) {
+    private void setAuthentication(String token) {
         String userId = tokenService.extractAccessTokenSubject(token);
         CustomUserDetails userDetails = userDetailsService.loadUserByUsername(userId);
         //토큰 type , 사용자 정보, 권한 넣어줌
-        SecurityContextHolder.getContext().setAuthentication(new CustomAuthenticationToken(type, userDetails, userDetails.getAuthorities()));
+        SecurityContextHolder.getContext().setAuthentication(new CustomAuthenticationToken(userDetails, userDetails.getAuthorities()));
     }
 
-    private void setRefreshAuthentication(String type, String token) {
-        String userId = tokenService.extractRefreshTokenSubject(token);
-        CustomUserDetails userDetails = userDetailsService.loadUserByUsername(userId);
-        SecurityContextHolder.getContext().setAuthentication(new CustomAuthenticationToken(type, userDetails, userDetails.getAuthorities()));
-    }
+
 }

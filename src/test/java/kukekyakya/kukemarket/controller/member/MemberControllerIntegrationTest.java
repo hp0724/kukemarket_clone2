@@ -108,8 +108,11 @@ class MemberControllerIntegrationTest {
                 .andExpect(redirectedUrl("/exception/access-denied"));
     }
 
+    //이전에는 refreshtoken을 api요청했을때 customAccessDeniedHandelr 가 작동하는데 정상이였지만
+    // 수정된 방식에서는 refreshtoken 을 요청하더라도 인증 할수 있는 사용자로 판단하지 않는다.
+    //CustomAuthenticationEntryPointHandler 동작해야함
     @Test
-    void deleteAccessDeniedByRefreshTokenTest() throws Exception {
+    void deleteUnauthorizedByRefreshTokenTest() throws Exception {
         // given
         Member member = memberRepository.findByEmail(initDB.getMember1Email()).orElseThrow(MemberNotFoundException::new);
         SignInResponse signInRes = signService.signIn(createSignInRequest(initDB.getMember1Email(), initDB.getPassword()));
@@ -118,7 +121,7 @@ class MemberControllerIntegrationTest {
         mockMvc.perform(
                         delete("/api/members/{id}", member.getId()).header("Authorization", signInRes.getRefreshToken()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(redirectedUrl("/exception/entry-point"));
     }
 
 }

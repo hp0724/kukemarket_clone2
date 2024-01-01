@@ -1,6 +1,7 @@
 package kukekyakya.kukemarket.controller.sign;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kukekyakya.kukemarket.dto.sign.RefreshTokenResponse;
 import kukekyakya.kukemarket.dto.sign.SignInRequest;
 import kukekyakya.kukemarket.dto.sign.SignInResponse;
 import kukekyakya.kukemarket.dto.sign.SignUpRequest;
@@ -84,4 +85,18 @@ class SignControllerTest {
                 .andExpect(jsonPath("$.result").doesNotExist());
 
     }
+
+    @Test
+    void refreshTokenTest() throws Exception {
+        // given
+        given(signService.refreshToken("refreshToken")).willReturn(new RefreshTokenResponse("accessToken"));
+
+        // when, then
+        mockMvc.perform(
+                        post("/api/refresh-token")
+                                .header("Authorization", "refreshToken"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result.data.accessToken").value("accessToken"));
+    }
+
 }

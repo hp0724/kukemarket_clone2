@@ -36,7 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .authorizeRequests() // 4
-                        .antMatchers(HttpMethod.POST, "/api/sign-in", "/api/sign-up").permitAll()
+                        //토큰 재발급이 permit all 이끼 때문에 토큰의 타입을 검증하는 불필요한 과정이 필요 없다.
+                        .antMatchers(HttpMethod.POST, "/api/sign-in", "/api/sign-up","/api/refresh-token").permitAll()
                         .antMatchers(HttpMethod.GET, "/api/**").permitAll()
                         .antMatchers(HttpMethod.DELETE, "/api/members/{id}/**").access("@memberGuard.check(#id)")
                         .anyRequest().hasAnyRole("ADMIN")
