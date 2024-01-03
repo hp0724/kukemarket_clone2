@@ -1,8 +1,10 @@
 package kukekyakya.kukemarket.init;
 
+import kukekyakya.kukemarket.entity.category.Category;
 import kukekyakya.kukemarket.entity.member.Member;
 import kukekyakya.kukemarket.entity.member.Role;
 import kukekyakya.kukemarket.entity.member.RoleType;
+import kukekyakya.kukemarket.repository.category.CategoryRepository;
 import kukekyakya.kukemarket.repository.member.MemberRepository;
 import kukekyakya.kukemarket.repository.role.RoleRepository;
 import kukekyakya.kukemarket.exception.RoleNotFoundException;
@@ -23,6 +25,8 @@ public class TestInitDB {
     MemberRepository memberRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    CategoryRepository categoryRepository;
 
     private String adminEmail = "admin@admin.com";
     private String member1Email = "member1@member.com";
@@ -34,12 +38,18 @@ public class TestInitDB {
         initRole();
         initTestAdmin();
         initTestMember();
+        initCategory();
     }
 
     private void initRole() {
         roleRepository.saveAll(
                 List.of(RoleType.values()).stream().map(roleType -> new Role(roleType)).collect(Collectors.toList())
         );
+    }
+    private void initCategory() {
+        Category category1 = new Category("category1", null);
+        Category category2 = new Category("category2", category1);
+        categoryRepository.saveAll(List.of(category1, category2));
     }
 
     private void initTestAdmin() {

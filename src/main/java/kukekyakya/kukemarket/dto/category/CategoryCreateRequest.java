@@ -30,7 +30,8 @@ public class CategoryCreateRequest {
 
     @ApiModelProperty(value = "부모 카테고리 아이디", notes = "부모 카테고리 아이디를 입력해주세요", example = "7")
     private Long parentId;
-
+    //카테고리의 부모가 없을수도 있으니 Optional.ofNullable  를 사용하고
+    //카테고리의 부모가 있는경우 두번째 인자로  부모 category 를 지정해주어야 한다.
     public static Category toEntity(CategoryCreateRequest req,CategoryRepository categoryRepository){
         return new Category(req.getName(),
                 Optional.ofNullable(req.getParentId())
