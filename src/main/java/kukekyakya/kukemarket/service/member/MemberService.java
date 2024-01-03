@@ -20,11 +20,7 @@ public class MemberService {
 
     @Transactional
     public void delete(Long id){
-
-        if (notExistsMember(id)) throw new MemberNotFoundException();
-        memberRepository.deleteById(id);
-    }
-    private boolean notExistsMember(Long id ){
-        return !memberRepository.existsById(id);
+        Member member = memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
+        memberRepository.delete(member);
     }
 }

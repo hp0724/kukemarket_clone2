@@ -28,13 +28,11 @@ public class CategoryService {
         categoryRepository.save(CategoryCreateRequest.toEntity(req, categoryRepository));
     }
 
+    //deleteById의 경우 select+ delete 이다
     @Transactional
     public void delete(Long id) {
-        if(notExistsCategory(id)) throw new CategoryNotFoundException();
-        categoryRepository.deleteById(id);
+        Category category =categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
+        categoryRepository.delete(category);
     }
 
-    private boolean notExistsCategory(Long id) {
-        return !categoryRepository.existsById(id);
-    }
 }
