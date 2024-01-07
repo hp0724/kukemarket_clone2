@@ -17,6 +17,12 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NamedEntityGraph(
+        name = "Member.roles",
+        attributeNodes = @NamedAttributeNode(value = "roles",subgraph = "Member.roles.role"),
+        subgraphs = @NamedSubgraph(name = "Member.roles.role",attributeNodes = @NamedAttributeNode("role"))
+
+)
 public class Member extends EntityDate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +40,7 @@ public class Member extends EntityDate {
     @Column(nullable = false,unique = true,length = 20)
     private String nickname;
 
-    @OneToMany(mappedBy = "member",cascade = CascadeType.PERSIST,orphanRemoval = true)
+    @OneToMany(mappedBy = "member",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<MemberRole> roles;
 
     public Member(String email,String password,String username,String nickname,List<Role>roles){

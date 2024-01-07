@@ -21,12 +21,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public CustomUserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
         //토큰에서 추출한 id로 member 조회
-        Member member = memberRepository.findById(Long.valueOf(userId))
+        Member member = memberRepository.findWithRolesById(Long.valueOf(userId))
                 .orElseGet(() -> new Member(null, null, null, null, List.of()));
         //찾은 member 를 이용해서 권한 찾기
         return new CustomUserDetails(
                 String.valueOf(member.getId()),
+                //member 의 memberRole 을 조회하면서 쿼리 한번 더
                 member.getRoles().stream().map(memberRole -> memberRole.getRole())
+                        //각 memberRole 의 RoleType 을 확인하기 위해 Role 을 다시 조회하면서 N번의 쿼리
                         .map(role -> role.getRoleType())
                         //roleType enum 이니깐 string 으로 변경
                         .map(roleType -> roleType.toString())
