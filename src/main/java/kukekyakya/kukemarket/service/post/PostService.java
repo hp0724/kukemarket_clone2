@@ -1,8 +1,6 @@
 package kukekyakya.kukemarket.service.post;
 
-import kukekyakya.kukemarket.dto.post.PostCreateRequest;
-import kukekyakya.kukemarket.dto.post.PostCreateResponse;
-import kukekyakya.kukemarket.dto.post.PostDto;
+import kukekyakya.kukemarket.dto.post.*;
 import kukekyakya.kukemarket.entity.member.Member;
 import kukekyakya.kukemarket.entity.post.Image;
 import kukekyakya.kukemarket.entity.post.Post;
@@ -61,4 +59,16 @@ public class PostService {
     private void deleteImages(List<Image> images) {
         images.stream().forEach(i -> fileService.delete(i.getUniqueName()));
     }
+    @Transactional
+    public PostUpdateResponse update(Long id, PostUpdateRequest req) {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        Post.ImageUpdatedResult result = post.update(req);
+        uploadImages(result.getAddedImages(), result.getAddedImageFiles());
+        deleteImages(result.getDeletedImages());
+        return new PostUpdateResponse(id);
+    }
+
+
+
+
 }

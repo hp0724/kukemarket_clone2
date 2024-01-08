@@ -176,84 +176,84 @@ public class PostControllerIntegrationTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/exception/entry-point"));
     }
-}
 
-//    @Test
-//    void updateByResourceOwnerTest()throws Exception{
-//        SignInResponse signInRes = signService.signIn(createSignInRequest(member1.getEmail(),initDB.getPassword()));
-//        Post post =postRepository.save(createPost(member1,category));
-//        String updatedTitle ="updatedTitle";
-//        String updatedContent = "updatedContent";
-//        Long updatedPrice = 1234L ;
-//
-//        mockMvc.perform(
-//                        multipart("/api/posts/{id}",post.getId())
-//                                .param("title",updatedTitle)
-//                                .param("content",updatedContent)
-//                                .param("price",String.valueOf(updatedPrice))
-//                                .with(requestPostProcessor->{
-//                                    requestPostProcessor.setMethod("PUT");
-//                                    return requestPostProcessor;
-//                                })
-//                                .contentType(MediaType.MULTIPART_FORM_DATA)
-//                                .header("Authorization",signInRes.getAccessToken()))
-//                .andExpect(status().isOk());
-//
-//        Post updatedPost = postRepository.findById(post.getId()).orElseThrow(PostNotFoundException::new);
-//        assertThat(updatedPost.getTitle()).isEqualTo(updatedTitle);
-//        assertThat(updatedPost.getContent()).isEqualTo(updatedContent);
-//        assertThat(updatedPost.getPrice()).isEqualTo(updatedPrice);
-//    }
-//
-//    @Test
-//    void updateByAdminTest()throws Exception{
-//        SignInResponse signInRes = signService.signIn(createSignInRequest(admin.getEmail(),initDB.getPassword()));
-//        Post post =postRepository.save(createPost(member1,category));
-//        String updatedTitle ="updatedTitle";
-//        String updatedContent = "updatedContent";
-//        Long updatedPrice = 1234L ;
-//
-//        mockMvc.perform(
-//                        multipart("/api/posts/{id}",post.getId())
-//                                .param("title",updatedTitle)
-//                                .param("content",updatedContent)
-//                                .param("price",String.valueOf(updatedPrice))
-//                                .with(requestPostProcessor->{
-//                                    requestPostProcessor.setMethod("PUT");
-//                                    return requestPostProcessor;
-//                                })
-//                                .contentType(MediaType.MULTIPART_FORM_DATA)
-//                                .header("Authorization",signInRes.getAccessToken()))
-//                .andExpect(status().isOk());
-//
-//        Post updatedPost = postRepository.findById(post.getId()).orElseThrow(PostNotFoundException::new);
-//        assertThat(updatedPost.getTitle()).isEqualTo(updatedTitle);
-//        assertThat(updatedPost.getContent()).isEqualTo(updatedContent);
-//        assertThat(updatedPost.getPrice()).isEqualTo(updatedPrice);
-//    }
-//
-//    @Test
-//    void updateByUnauthorizedByNoneTokenTest()throws Exception{
-//        Post post =postRepository.save(createPost(member1,category));
-//        String updatedTitle ="updatedTitle";
-//        String updatedContent = "updatedContent";
-//        Long updatedPrice = 1234L ;
-//
-//        mockMvc.perform(
-//                        multipart("/api/posts/{id}",post.getId())
-//                                .param("title",updatedTitle)
-//                                .param("content",updatedContent)
-//                                .param("price",String.valueOf(updatedPrice))
-//                                .with(requestPostProcessor->{
-//                                    requestPostProcessor.setMethod("PUT");
-//                                    return requestPostProcessor;
-//                                })
-//                                .contentType(MediaType.MULTIPART_FORM_DATA))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(redirectedUrl("/exception/entry-point"));
-//
-//
-//    }
+
+    @Test
+    void updateByResourceOwnerTest() throws Exception {
+        SignInResponse signInRes = signService.signIn(createSignInRequest(member1.getEmail(), initDB.getPassword()));
+        Post post = postRepository.save(createPost(member1, category));
+        String updatedTitle = "updatedTitle";
+        String updatedContent = "updatedContent";
+        Long updatedPrice = 1234L;
+
+        mockMvc.perform(
+                        multipart("/api/posts/{id}", post.getId())
+                                .param("title", updatedTitle)
+                                .param("content", updatedContent)
+                                .param("price", String.valueOf(updatedPrice))
+                                .with(requestPostProcessor -> {
+                                    requestPostProcessor.setMethod("PUT");
+                                    return requestPostProcessor;
+                                })
+                                .contentType(MediaType.MULTIPART_FORM_DATA)
+                                .header("Authorization", signInRes.getAccessToken()))
+                .andExpect(status().isOk());
+
+        Post updatedPost = postRepository.findById(post.getId()).orElseThrow(PostNotFoundException::new);
+        assertThat(updatedPost.getTitle()).isEqualTo(updatedTitle);
+        assertThat(updatedPost.getContent()).isEqualTo(updatedContent);
+        assertThat(updatedPost.getPrice()).isEqualTo(updatedPrice);
+    }
+
+    @Test
+    void updateByAdminTest() throws Exception {
+        SignInResponse signInRes = signService.signIn(createSignInRequest(admin.getEmail(), initDB.getPassword()));
+        Post post = postRepository.save(createPost(member1, category));
+        String updatedTitle = "updatedTitle";
+        String updatedContent = "updatedContent";
+        Long updatedPrice = 1234L;
+
+        mockMvc.perform(
+                        multipart("/api/posts/{id}", post.getId())
+                                .param("title", updatedTitle)
+                                .param("content", updatedContent)
+                                .param("price", String.valueOf(updatedPrice))
+                                .with(requestPostProcessor -> {
+                                    requestPostProcessor.setMethod("PUT");
+                                    return requestPostProcessor;
+                                })
+                                .contentType(MediaType.MULTIPART_FORM_DATA)
+                                .header("Authorization", signInRes.getAccessToken()))
+                .andExpect(status().isOk());
+
+        Post updatedPost = postRepository.findById(post.getId()).orElseThrow(PostNotFoundException::new);
+        assertThat(updatedPost.getTitle()).isEqualTo(updatedTitle);
+        assertThat(updatedPost.getContent()).isEqualTo(updatedContent);
+        assertThat(updatedPost.getPrice()).isEqualTo(updatedPrice);
+    }
+
+    @Test
+    void updateByUnauthorizedByNoneTokenTest() throws Exception {
+        Post post = postRepository.save(createPost(member1, category));
+        String updatedTitle = "updatedTitle";
+        String updatedContent = "updatedContent";
+        Long updatedPrice = 1234L;
+
+        mockMvc.perform(
+                        multipart("/api/posts/{id}", post.getId())
+                                .param("title", updatedTitle)
+                                .param("content", updatedContent)
+                                .param("price", String.valueOf(updatedPrice))
+                                .with(requestPostProcessor -> {
+                                    requestPostProcessor.setMethod("PUT");
+                                    return requestPostProcessor;
+                                })
+                                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/exception/entry-point"));
+
+
+    }
 //    @Test
 //    void readAllTest()throws Exception{
 //        PostReadCondition cond = createPostReadCondition(0,1);
@@ -267,4 +267,4 @@ public class PostControllerIntegrationTest {
 //
 //    }
 
-
+}

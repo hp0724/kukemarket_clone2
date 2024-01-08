@@ -91,23 +91,23 @@ public class PostControllerAdviceTest {
                 .andExpect(jsonPath("$.code").value(-1012));
     }
 //
-//    @Test
-//    void updateExceptionByPostNotFoundTest() throws Exception{
-//        given(postService.update(anyLong(),any())).willThrow(PostNotFoundException.class);
-//
-//        mockMvc.perform(
-//                        multipart("/api/posts/{id}",1L)
-//                                .param("title","title")
-//                                .param("content","content")
-//                                .param("price","1234")
-//                                .with(requestPostProcessor->{
-//                                    requestPostProcessor.setMethod("PUT");
-//                                    return requestPostProcessor;
-//                                })
-//                                .contentType(MediaType.MULTIPART_FORM_DATA))
-//                .andExpect(status().isNotFound())
-//                .andExpect(jsonPath("$.code").value(-1012));
-//    }
+    @Test
+    void updateExceptionByPostNotFoundTest() throws Exception{
+        given(postService.update(anyLong(),any())).willThrow(PostNotFoundException.class);
+
+        mockMvc.perform(
+                        multipart("/api/posts/{id}",1L)
+                                .param("title","title")
+                                .param("content","content")
+                                .param("price","1234")
+                                .with(requestPostProcessor->{
+                                    requestPostProcessor.setMethod("PUT");
+                                    return requestPostProcessor;
+                                })
+                                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value(-1012));
+    }
     private ResultActions performCreate()throws Exception{
         PostCreateRequest req = createPostCreateRequest();
         return mockMvc.perform(

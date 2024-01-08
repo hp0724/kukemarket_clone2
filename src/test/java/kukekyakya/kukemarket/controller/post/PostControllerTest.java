@@ -1,6 +1,7 @@
 package kukekyakya.kukemarket.controller.post;
 
 import kukekyakya.kukemarket.dto.post.PostCreateRequest;
+import kukekyakya.kukemarket.dto.post.PostUpdateRequest;
 import kukekyakya.kukemarket.service.post.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import java.awt.*;
 import java.util.List;
 
 import static kukekyakya.kukemarket.factory.dto.PostCreateRequestFactory.createPostCreateRequestWithImages;
+import static kukekyakya.kukemarket.factory.dto.PostUpdateRequestFactory.createPostUpdateRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
@@ -89,47 +91,47 @@ public class PostControllerTest {
                 .andExpect(status().isOk());
         verify(postService).delete(id);
     }
-//
-//    @Test
-//    void updateTest() throws Exception{
-//        // given
-//        //메서드에 전달된 PostUpdateRequest 캡처 한다.
-//        ArgumentCaptor<PostUpdateRequest> postUpdateRequestArgumentCaptor = ArgumentCaptor.forClass(PostUpdateRequest.class);
-//
-//        List<MultipartFile> addedImages = List.of(
-//                new MockMultipartFile("test1", "test1.PNG", MediaType.IMAGE_PNG_VALUE, "test1".getBytes()),
-//                new MockMultipartFile("test2", "test2.PNG", MediaType.IMAGE_PNG_VALUE, "test2".getBytes())
-//        );
-//        List<Long> deletedImages = List.of(1L, 2L);
-//
-//        PostUpdateRequest req = createPostUpdateRequest("title", "content", 1234L, addedImages, deletedImages);
-//        //mockMvc를 사용하여 특정 POST 요청을 시뮬레이션하고, 해당 요청을 PUT 방식으로 변경합니다
-//        // when, then
-//        mockMvc.perform(
-//                        multipart("/api/posts/{id}", 1L)
-//                                .file("addedImages", addedImages.get(0).getBytes())
-//                                .file("addedImages", addedImages.get(1).getBytes())
-//                                .param("deletedImages", String.valueOf(deletedImages.get(0)), String.valueOf(deletedImages.get(1)))
-//                                .param("title", req.getTitle())
-//                                .param("content", req.getContent())
-//                                .param("price", String.valueOf(req.getPrice()))
-//                                .with(requestPostProcessor -> {
-//                                    requestPostProcessor.setMethod("PUT");
-//                                    return requestPostProcessor;
-//                                })
-//                                .contentType(MediaType.MULTIPART_FORM_DATA))
-//                .andExpect(status().isOk());
-//
-//        verify(postService).update(anyLong(), postUpdateRequestArgumentCaptor.capture());
-//
-//        PostUpdateRequest capturedRequest = postUpdateRequestArgumentCaptor.getValue();
-//        List<MultipartFile> capturedAddedImages = capturedRequest.getAddedImages();
-//        assertThat(capturedAddedImages.size()).isEqualTo(2);
-//
-//        List<Long> capturedDeletedImages = capturedRequest.getDeletedImages();
-//        assertThat(capturedDeletedImages.size()).isEqualTo(2);
-//        assertThat(capturedDeletedImages).contains(deletedImages.get(0), deletedImages.get(1));
-//    }
+
+    @Test
+    void updateTest() throws Exception{
+        // given
+        //메서드에 전달된 PostUpdateRequest 캡처 한다.
+        ArgumentCaptor<PostUpdateRequest> postUpdateRequestArgumentCaptor = ArgumentCaptor.forClass(PostUpdateRequest.class);
+
+        List<MultipartFile> addedImages = List.of(
+                new MockMultipartFile("test1", "test1.PNG", MediaType.IMAGE_PNG_VALUE, "test1".getBytes()),
+                new MockMultipartFile("test2", "test2.PNG", MediaType.IMAGE_PNG_VALUE, "test2".getBytes())
+        );
+        List<Long> deletedImages = List.of(1L, 2L);
+
+        PostUpdateRequest req = createPostUpdateRequest("title", "content", 1234L, addedImages, deletedImages);
+        //mockMvc를 사용하여 특정 POST 요청을 시뮬레이션하고, 해당 요청을 PUT 방식으로 변경합니다
+        // when, then
+        mockMvc.perform(
+                        multipart("/api/posts/{id}", 1L)
+                                .file("addedImages", addedImages.get(0).getBytes())
+                                .file("addedImages", addedImages.get(1).getBytes())
+                                .param("deletedImages", String.valueOf(deletedImages.get(0)), String.valueOf(deletedImages.get(1)))
+                                .param("title", req.getTitle())
+                                .param("content", req.getContent())
+                                .param("price", String.valueOf(req.getPrice()))
+                                .with(requestPostProcessor -> {
+                                    requestPostProcessor.setMethod("PUT");
+                                    return requestPostProcessor;
+                                })
+                                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isOk());
+
+        verify(postService).update(anyLong(), postUpdateRequestArgumentCaptor.capture());
+
+        PostUpdateRequest capturedRequest = postUpdateRequestArgumentCaptor.getValue();
+        List<MultipartFile> capturedAddedImages = capturedRequest.getAddedImages();
+        assertThat(capturedAddedImages.size()).isEqualTo(2);
+
+        List<Long> capturedDeletedImages = capturedRequest.getDeletedImages();
+        assertThat(capturedDeletedImages.size()).isEqualTo(2);
+        assertThat(capturedDeletedImages).contains(deletedImages.get(0), deletedImages.get(1));
+    }
 //    @Test
 //    void readAllTest() throws Exception{
 //        PostReadCondition cond = createPostReadCondition(0, 1, List.of(1L, 2L), List.of(1L, 2L));
