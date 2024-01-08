@@ -1,0 +1,4 @@
+#application - <profile> 해당 profile 이 활설화 되었을때만 설정 값들을 주입받을수 있게 된다.
+upload:
+    image:
+      location: "C://Users//suha hwang//Pictures//kukekyakya/"

@@ -4,6 +4,7 @@ import kukekyakya.kukemarket.dto.response.Response;
 import kukekyakya.kukemarket.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,9 +34,10 @@ public class ExceptionAdvice {
         return Response.failure(-1002, "접근이 거부되었습니다.");
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    //BindException 의 경우 MethodArgumentNotValidException 의 상위 클래스
+    @ExceptionHandler(BindException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Response methodArgumentNotValidException(MethodArgumentNotValidException e) { // 2
+    public Response bindException(BindException e) { // 2
         return Response.failure(-1003, e.getBindingResult().getFieldError().getDefaultMessage());
     }
 
@@ -89,6 +91,25 @@ public class ExceptionAdvice {
     public Response cannotConvertNestedStructureException(CannotConvertNestedStructureException e) {
         log.info("e = {}", e.getMessage());
         return Response.failure(-1011, "중첩 구조 변환에 실패하였습니다.");
+    }
+
+    @ExceptionHandler(PostNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response postNotFoundException() {
+        return Response.failure(-1012, "존재하지 않는 게시글입니다.");
+    }
+
+    @ExceptionHandler(UnsupportedImageFormatException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response unsupportedImageFormatException( ) {
+        return Response.failure(-1013, "지원하지 않는 이미지 형식입니다.");
+    }
+
+    @ExceptionHandler(FileUploadFailureException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response fileUploadFailureException(FileUploadFailureException e){
+        log.info("e={}",e.getMessage());
+        return Response.failure(-1014,"파일 업로드에 실패 하였습니다.");
     }
 }
 

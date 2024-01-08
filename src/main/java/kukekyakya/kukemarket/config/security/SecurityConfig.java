@@ -37,12 +37,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .authorizeRequests() // 4
+                        .antMatchers(HttpMethod.GET,"/image/**").permitAll()
                         //토큰 재발급이 permit all 이끼 때문에 토큰의 타입을 검증하는 불필요한 과정이 필요 없다.
                         .antMatchers(HttpMethod.POST, "/api/sign-in", "/api/sign-up","/api/refresh-token").permitAll()
                         .antMatchers(HttpMethod.GET, "/api/**").permitAll()
                         .antMatchers(HttpMethod.DELETE, "/api/members/{id}/**").access("@memberGuard.check(#id)")
                         .antMatchers(HttpMethod.POST,"/api/categories/**").hasRole("ADMIN")
                         .antMatchers(HttpMethod.DELETE,"/api/categories/**").hasRole("ADMIN")
+                    .antMatchers(HttpMethod.POST, "/api/posts").authenticated()
                         .anyRequest().hasAnyRole("ADMIN")
                 .and()
                     //인증된 사용자가 권한 부족 등의 사유로 인해 접근이 거부되었을 때 작동할 핸들러를 지정해줍니다.
