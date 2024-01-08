@@ -114,23 +114,23 @@ public class PostServiceTest {
     }
 //
 //
-//    @Test
-//    void deleteTest(){
-//        Post post = createPostWithImages(List.of(createImage(),createImage()));
-//        given(postRepository.findById(anyLong())).willReturn(Optional.of(post));
-//
-//        postService.delete(1L);
-//        // delete 메서드가 Post 객체와 연관된 이미지의 수와 동일한 횟수로 호출되는지 확인합니다.
-//        // anyString()을 사용하여 이 메서드가 호출된 횟수가 중요하며 삭제되는 특정 문자열은 중요하지 않음을 나타냅니다.
-//        verify(fileService,times(post.getImages().size())).delete(anyString());
-//        // any() 인자 매처는 delete 메서드가 어떤 인수로 호출되었는지는 중요하지 않고 메서드 호출 자체만을 확인합니다.
-//        verify(postRepository).delete(any());
-//    }
-//    @Test
-//    void deleteExceptionByNotFoundPostTest(){
-//        given(postRepository.findById(anyLong())).willReturn(Optional.empty());
-//        assertThatThrownBy(()->postService.delete(1L)).isInstanceOf(PostNotFoundException.class);
-//    }
+    @Test
+    void deleteTest(){
+        Post post = createPostWithImages(List.of(createImage(),createImage()));
+        given(postRepository.findById(anyLong())).willReturn(Optional.of(post));
+
+        postService.delete(1L);
+        // delete 메서드가 Post 객체와 연관된 이미지의 수와 동일한 횟수로 호출되는지 확인합니다.
+        // anyString()을 사용하여 이 메서드가 호출된 횟수가 중요하며 삭제되는 특정 문자열은 중요하지 않음을 나타냅니다.
+        verify(fileService,times(post.getImages().size())).delete(anyString());
+        // any() 인자 매처는 delete 메서드가 어떤 인수로 호출되었는지는 중요하지 않고 메서드 호출 자체만을 확인합니다.
+        verify(postRepository).delete(any());
+    }
+    @Test
+    void deleteExceptionByNotFoundPostTest(){
+        given(postRepository.findById(anyLong())).willReturn(Optional.empty());
+        assertThatThrownBy(()->postService.delete(1L)).isInstanceOf(PostNotFoundException.class);
+    }
 //
 //    @Test
 //    void updateTest(){

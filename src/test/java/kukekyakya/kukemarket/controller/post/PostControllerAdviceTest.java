@@ -81,15 +81,15 @@ public class PostControllerAdviceTest {
                 );
     }
 
-//    @Test
-//    void deleteExceptionByPostNotFoundTest() throws Exception{
-//        doThrow(PostNotFoundException.class).when(postService).delete(anyLong());
-//
-//        mockMvc.perform(
-//                        delete("/api/posts/{id}",1L))
-//                .andExpect(status().isNotFound())
-//                .andExpect(jsonPath("$.code").value(-1012));
-//    }
+    @Test
+    void deleteExceptionByPostNotFoundTest() throws Exception{
+        doThrow(PostNotFoundException.class).when(postService).delete(anyLong());
+
+        mockMvc.perform(
+                        delete("/api/posts/{id}",1L))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value(-1012));
+    }
 //
 //    @Test
 //    void updateExceptionByPostNotFoundTest() throws Exception{

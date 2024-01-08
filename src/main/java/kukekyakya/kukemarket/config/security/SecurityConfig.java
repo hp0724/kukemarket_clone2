@@ -44,7 +44,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .antMatchers(HttpMethod.DELETE, "/api/members/{id}/**").access("@memberGuard.check(#id)")
                         .antMatchers(HttpMethod.POST,"/api/categories/**").hasRole("ADMIN")
                         .antMatchers(HttpMethod.DELETE,"/api/categories/**").hasRole("ADMIN")
-                    .antMatchers(HttpMethod.POST, "/api/posts").authenticated()
+                        .antMatchers(HttpMethod.POST, "/api/posts").authenticated()
+                        .antMatchers(HttpMethod.DELETE, "/api/posts/{id}").access("@postGuard.check(#id)")
                         .anyRequest().hasAnyRole("ADMIN")
                 .and()
                     //인증된 사용자가 권한 부족 등의 사유로 인해 접근이 거부되었을 때 작동할 핸들러를 지정해줍니다.

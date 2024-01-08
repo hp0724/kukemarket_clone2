@@ -80,15 +80,15 @@ public class PostControllerTest {
                 .andExpect(status().isOk());
         verify(postService).read(id);
     }
-//
-//    @Test
-//    void deleteTest() throws Exception {
-//        Long id =1L ;
-//        mockMvc.perform(
-//                        delete("/api/posts/{id}",id))
-//                .andExpect(status().isOk());
-//        verify(postService).delete(id);
-//    }
+
+    @Test
+    void deleteTest() throws Exception {
+        Long id =1L ;
+        mockMvc.perform(
+                        delete("/api/posts/{id}",id))
+                .andExpect(status().isOk());
+        verify(postService).delete(id);
+    }
 //
 //    @Test
 //    void updateTest() throws Exception{
