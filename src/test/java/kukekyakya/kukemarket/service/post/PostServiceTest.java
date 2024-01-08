@@ -1,6 +1,7 @@
 package kukekyakya.kukemarket.service.post;
 
 import kukekyakya.kukemarket.dto.post.PostCreateRequest;
+import kukekyakya.kukemarket.dto.post.PostDto;
 import kukekyakya.kukemarket.entity.post.Image;
 import kukekyakya.kukemarket.entity.post.Post;
 import kukekyakya.kukemarket.exception.CategoryNotFoundException;
@@ -95,22 +96,22 @@ public class PostServiceTest {
 
     }
 
-//    @Test
-//    void readTest(){
-//        Post post = createPostWithImages(List.of(createImage(),createImage()));
-//        given(postRepository.findById(anyLong())).willReturn(Optional.of(post));
-//
-//        PostDto postDto = postService.read(1L);
-//
-//        assertThat(postDto.getTitle()).isEqualTo(post.getTitle());
-//        assertThat(postDto.getImages().size()).isEqualTo(post.getImages().size());
-//    }
-//
-//    @Test
-//    void readExceptionByPostNotFoundTest(){
-//        given(postRepository.findById(anyLong())).willReturn(Optional.empty());
-//        assertThatThrownBy(()->postService.read(1L)).isInstanceOf(PostNotFoundException.class);
-//    }
+    @Test
+    void readTest(){
+        Post post = createPostWithImages(List.of(createImage(),createImage()));
+        given(postRepository.findById(anyLong())).willReturn(Optional.of(post));
+
+        PostDto postDto = postService.read(1L);
+
+        assertThat(postDto.getTitle()).isEqualTo(post.getTitle());
+        assertThat(postDto.getImages().size()).isEqualTo(post.getImages().size());
+    }
+
+    @Test
+    void readExceptionByPostNotFoundTest(){
+        given(postRepository.findById(anyLong())).willReturn(Optional.empty());
+        assertThatThrownBy(()->postService.read(1L)).isInstanceOf(PostNotFoundException.class);
+    }
 //
 //
 //    @Test

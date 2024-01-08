@@ -2,6 +2,7 @@ package kukekyakya.kukemarket.controller.post;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import kukekyakya.kukemarket.aop.AssignMemberId;
 import kukekyakya.kukemarket.dto.post.PostCreateRequest;
 import kukekyakya.kukemarket.dto.response.Response;
@@ -9,10 +10,7 @@ import kukekyakya.kukemarket.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -30,5 +28,13 @@ public class PostController {
     @AssignMemberId
     public Response create(@Valid @ModelAttribute PostCreateRequest req) {
         return Response.success(postService.create(req));
+    }
+
+    // PostController.java
+    @ApiOperation(value = "게시글 조회", notes = "게시글을 조회한다.")
+    @GetMapping("/api/posts/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Response read(@ApiParam(value = "게시글 id", required = true) @PathVariable Long id) {
+        return Response.success(postService.read(id));
     }
 }

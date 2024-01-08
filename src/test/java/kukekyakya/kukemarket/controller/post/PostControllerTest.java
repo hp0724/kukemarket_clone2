@@ -71,15 +71,15 @@ public class PostControllerTest {
         assertThat(capturedRequest.getImages().size()).isEqualTo(2);
     }
 
-//    @Test
-//    void readTest()throws Exception{
-//        Long id =1L;
-//
-//        mockMvc.perform(
-//                        get("/api/posts/{id}",id))
-//                .andExpect(status().isOk());
-//        verify(postService).read(id);
-//    }
+    @Test
+    void readTest()throws Exception{
+        Long id =1L;
+
+        mockMvc.perform(
+                        get("/api/posts/{id}",id))
+                .andExpect(status().isOk());
+        verify(postService).read(id);
+    }
 //
 //    @Test
 //    void deleteTest() throws Exception {

@@ -118,13 +118,13 @@ public class PostControllerIntegrationTest {
                 .andExpect(redirectedUrl("/exception/entry-point"));
 
     }
-//    @Test
-//    void readTest() throws Exception {
-//        Post post =postRepository.save(createPost(member1,category));
-//        mockMvc.perform(
-//                get("/api/posts/{id}",post.getId())
-//        ).andExpect(status().isOk());
-//    }
+    @Test
+    void readTest() throws Exception {
+        Post post =postRepository.save(createPost(member1,category));
+        mockMvc.perform(
+                get("/api/posts/{id}",post.getId())
+        ).andExpect(status().isOk());
+    }
 //
 //    @Test
 //    void deleteByResourceOwnerTest() throws Exception {

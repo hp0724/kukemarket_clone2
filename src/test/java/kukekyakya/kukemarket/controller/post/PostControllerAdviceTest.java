@@ -70,17 +70,17 @@ public class PostControllerAdviceTest {
                 .andExpect(jsonPath("$.code").value(-1013));
     }
 
-//    @Test
-//    void readExceptionByPostNotFoundTest() throws Exception {
-//        given(postService.read(anyLong())).willThrow(PostNotFoundException.class);
-//
-//        mockMvc.perform(
-//                        get("/api/posts/{id}",1L))
-//                .andExpect(status().isNotFound())
-//                .andExpect(jsonPath("$.code").value(-1012)
-//                );
-//    }
-//
+    @Test
+    void readExceptionByPostNotFoundTest() throws Exception {
+        given(postService.read(anyLong())).willThrow(PostNotFoundException.class);
+
+        mockMvc.perform(
+                        get("/api/posts/{id}",1L))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value(-1012)
+                );
+    }
+
 //    @Test
 //    void deleteExceptionByPostNotFoundTest() throws Exception{
 //        doThrow(PostNotFoundException.class).when(postService).delete(anyLong());

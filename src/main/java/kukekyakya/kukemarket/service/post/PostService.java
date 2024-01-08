@@ -2,9 +2,11 @@ package kukekyakya.kukemarket.service.post;
 
 import kukekyakya.kukemarket.dto.post.PostCreateRequest;
 import kukekyakya.kukemarket.dto.post.PostCreateResponse;
+import kukekyakya.kukemarket.dto.post.PostDto;
 import kukekyakya.kukemarket.entity.member.Member;
 import kukekyakya.kukemarket.entity.post.Image;
 import kukekyakya.kukemarket.entity.post.Post;
+import kukekyakya.kukemarket.exception.PostNotFoundException;
 import kukekyakya.kukemarket.repository.category.CategoryRepository;
 import kukekyakya.kukemarket.repository.member.MemberRepository;
 import kukekyakya.kukemarket.repository.post.PostRepository;
@@ -38,6 +40,11 @@ public class PostService {
         );
         uploadImages(post.getImages(), req.getImages());
         return new PostCreateResponse(post.getId());
+    }
+
+    public PostDto read(Long id) {
+        //findById 를 통해서 post 찾기
+        return PostDto.toDto(postRepository.findById(id).orElseThrow(PostNotFoundException::new));
     }
 
     private void uploadImages(List<Image> images, List<MultipartFile> fileImages) {
