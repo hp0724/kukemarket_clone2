@@ -68,6 +68,11 @@ public class PostService {
         return new PostUpdateResponse(id);
     }
 
+    public PostListDto readAll(PostReadCondition cond) {
+        return PostListDto.toDto(
+                postRepository.findAllByCondition(cond)
+        );
+    }
 
 
 

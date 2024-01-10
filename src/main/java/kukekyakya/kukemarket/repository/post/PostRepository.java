@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 
-public interface PostRepository extends JpaRepository<Post,Long> {
+public interface PostRepository extends JpaRepository<Post,Long>,CustomPostRepository {
     /*
     join fetch p.member: 이 부분은 Post 엔터티의 member 속성과 조인하고,
     fetch 키워드를 사용함으로써 관련 엔터티를 즉시 로딩하도록 지시합니다.

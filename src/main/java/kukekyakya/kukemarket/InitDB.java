@@ -4,8 +4,10 @@ import kukekyakya.kukemarket.entity.category.Category;
 import kukekyakya.kukemarket.entity.member.Member;
 import kukekyakya.kukemarket.entity.member.Role;
 import kukekyakya.kukemarket.entity.member.RoleType;
+import kukekyakya.kukemarket.entity.post.Post;
 import kukekyakya.kukemarket.repository.category.CategoryRepository;
 import kukekyakya.kukemarket.repository.member.MemberRepository;
+import kukekyakya.kukemarket.repository.post.PostRepository;
 import kukekyakya.kukemarket.repository.role.RoleRepository;
 import kukekyakya.kukemarket.exception.RoleNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Component
 @RequiredArgsConstructor
@@ -30,19 +33,19 @@ public class InitDB {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final CategoryRepository categoryRepository;
+    private final PostRepository postRepository;
 
 
 
     @EventListener(ApplicationReadyEvent.class) // 2
     @Transactional
     public void initDB() {
-        log.info("initialize database");
         initRole(); // 3
         initTestAdmin();
         initTestMember();
         initCategory();
-
-
+        initPost();
+        log.info("initialize database");
     }
 
     private void initRole() {
@@ -78,5 +81,14 @@ public class InitDB {
         Category c6 = categoryRepository.save(new Category("category6", c4));
         Category c7 = categoryRepository.save(new Category("category7", c3));
         Category c8 = categoryRepository.save(new Category("category8", null));
+    }
+
+    private void initPost() {
+        Member member = memberRepository.findAll().get(0);
+        Category category = categoryRepository.findAll().get(0);
+        IntStream.range(0, 100000)
+                .forEach(i -> postRepository.save(
+                        new Post("title" + i, "content" + i, Long.valueOf(i), member, category, List.of())
+                ));
     }
 }
