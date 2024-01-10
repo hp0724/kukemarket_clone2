@@ -28,6 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**");
     }
 
+    // Guard들을 이용해서 API에 따른 접근을 제어
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http

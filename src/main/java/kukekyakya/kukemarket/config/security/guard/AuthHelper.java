@@ -16,16 +16,16 @@ import java.util.stream.Collectors;
 //사용자 정보를 통해 우리가 필요한 요청자의 id 나 인증 여부 , 권한 등급 , 요청 토큰의 타입을 추출하는데 도움
 public class AuthHelper {
 
-    public boolean isAuthenticated() {
+    public static boolean isAuthenticated() {
         return getAuthentication() instanceof CustomAuthenticationToken &&
                 getAuthentication().isAuthenticated();
     }
 
-    public Long extractMemberId() {
+    public static Long extractMemberId() {
         return Long.valueOf(getUserDetails().getUserId());
     }
 
-    public Set<RoleType> extractMemberRoles() {
+    public static Set<RoleType> extractMemberRoles() {
         return getUserDetails().getAuthorities()
                 .stream()
                 .map(authority -> authority.getAuthority())
@@ -34,11 +34,11 @@ public class AuthHelper {
     }
 
 
-    private CustomUserDetails getUserDetails() {
+    private static CustomUserDetails getUserDetails() {
         return (CustomUserDetails) getAuthentication().getPrincipal();
     }
 
-    private Authentication getAuthentication() {
+    private static Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 }
