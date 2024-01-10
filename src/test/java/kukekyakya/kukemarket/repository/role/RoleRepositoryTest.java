@@ -1,11 +1,14 @@
 package kukekyakya.kukemarket.repository.role;
 
+import kukekyakya.kukemarket.config.QuerydslConfig;
+import kukekyakya.kukemarket.config.TestConfig;
 import kukekyakya.kukemarket.entity.member.Role;
 import kukekyakya.kukemarket.entity.member.RoleType;
 import kukekyakya.kukemarket.exception.RoleNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import javax.persistence.EntityManager;
@@ -16,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
+@Import(TestConfig.class)
 class RoleRepositoryTest {
     @Autowired RoleRepository roleRepository;
     @PersistenceContext EntityManager em;
