@@ -7,6 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -16,60 +18,26 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class TokenHelperTest {
     TokenHelper tokenHelper;
-    @Mock JwtHandler jwtHandler;
 
     @BeforeEach
     void beforeEach() {
-        tokenHelper = new TokenHelper(jwtHandler, "key", 1000L);
+        tokenHelper = new TokenHelper(new JwtHandler(), "myKey", 1000L);
     }
 
     @Test
-    void createTokenTest() {
+    void createTokenAndParseTest() {
         // given
-        given(jwtHandler.createToken(anyString(), anyString(), anyLong())).willReturn("token");
+        String memberId = "1";
+        List<String> roleTypes = List.of("NORMAL", "ADMIN");
+        TokenHelper.PrivateClaims privateClaims = new TokenHelper.PrivateClaims(memberId, roleTypes);
 
         // when
-        String createdToken = tokenHelper.createToken("subject");
+        String token = tokenHelper.createToken(privateClaims);
 
         // then
-        assertThat(createdToken).isEqualTo("token");
-        verify(jwtHandler).createToken(anyString(), anyString(), anyLong());
-    }
-
-    @Test
-    void validateTest() {
-        // given
-        given(jwtHandler.validate(anyString(), anyString())).willReturn(true);
-
-        // when
-        boolean result = tokenHelper.validate("token");
-
-        // then
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    void invalidateTest() {
-        // given
-        given(jwtHandler.validate(anyString(), anyString())).willReturn(false);
-
-        // when
-        boolean result = tokenHelper.validate("token");
-
-        // then
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    void extractSubjectTest() {
-        // given
-        given(jwtHandler.extractSubject(anyString(), anyString())).willReturn("subject");
-
-        // when
-        String subject = tokenHelper.extractSubject("token");
-
-        // then
-        assertThat(subject).isEqualTo(subject);
+        TokenHelper.PrivateClaims parsedPrivateClaims = tokenHelper.parse(token).orElseThrow(RuntimeException::new);
+        assertThat(parsedPrivateClaims.getMemberId()).isEqualTo(memberId);
+        assertThat(parsedPrivateClaims.getRoleTypes()).contains(roleTypes.get(0), roleTypes.get(1));
     }
 
 

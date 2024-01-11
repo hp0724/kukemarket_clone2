@@ -16,8 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    //토큰을 통해 사용자 인증을 위한 의존성
-    private final TokenHelper accessTokenHelper;
+//    //토큰을 통해 사용자 인증을 위한 의존성
+//    private final TokenHelper accessTokenHelper;
     //토큰을 통해 사용자 인증을 위한 의존성 토큰에 저장된 subject (id) 로 사용자의 정보를 조회하는데 사용
     private final CustomUserDetailsService userDetailsService;
 
@@ -59,7 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     //토큰으로 사용자를 인증하기 위해 직접 정의한 JwtAuthenticationFilter를
                     // UsernamePasswordAuthenticationFilter의 이전 위치에 등록해줍니다.
                     // JwtAuthenticationFilter는 필요한 의존성인 TokenService와 CustomUserDetailsService를 주입받습니다.
-                    .addFilterBefore(new JwtAuthenticationFilter(accessTokenHelper, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+                    .addFilterBefore(new JwtAuthenticationFilter( userDetailsService), UsernamePasswordAuthenticationFilter.class);
     }
     @Bean
     public PasswordEncoder passwordEncoder(){

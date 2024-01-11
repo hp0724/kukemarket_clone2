@@ -15,6 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.security.auth.RefreshFailedException;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 // 하나의 메소드를 하나의 트랜잭션으로 묶어주기위해 선언
@@ -38,25 +41,24 @@ public class SignService {
     public SignInResponse signIn(SignInRequest req){
         Member member=memberRepository.findByEmail(req.getEmail()).orElseThrow(LoginFailureException::new);
         validatePassword(req,member);
-        String subject = createSubject(member);
-        String accessToken = accessTokenHelper.createToken(subject);
-        String refreshToken = refreshTokenHelper.createToken(subject);
+        TokenHelper.PrivateClaims privateClaims = createPrivateClaims(member);
+        String accessToken = accessTokenHelper.createToken(privateClaims);
+        String refreshToken = refreshTokenHelper.createToken(privateClaims);
         return new SignInResponse(accessToken,refreshToken);
     }
 
     //refresh token 에서 subject 추출해서 새로운 엑세스 토큰 발급
     public RefreshTokenResponse refreshToken(String rToken){
-        validateRefreshToken(rToken);
-        String subject = refreshTokenHelper.extractSubject(rToken);
-        String accessToken = accessTokenHelper.createToken(subject);
+        TokenHelper.PrivateClaims privateClaims = refreshTokenHelper.parse(rToken).orElseThrow(RefreshTokenFailureException::new);
+        String accessToken = accessTokenHelper.createToken(privateClaims);
         return new RefreshTokenResponse(accessToken);
     }
-    private void validateRefreshToken(String rToken){
-        //refresh token 유효하지 않은 경우 예외 처리
-        if(!refreshTokenHelper.validate(rToken)){
-            throw new AuthenticationEntryPointException();
-        }
-    }
+//    private void validateRefreshToken(String rToken){
+//        //refresh token 유효하지 않은 경우 예외 처리
+//        if(!refreshTokenHelper.validate(rToken)){
+//            throw new AuthenticationEntryPointException();
+//        }
+//    }
 
     //이메일과 닉네임의 중복섬 검사
     private void validateSignUpInfo(SignUpRequest req){
@@ -72,8 +74,14 @@ public class SignService {
     }
 
     //jwt 에 들어갈 subject memberId로 생성
-    private String createSubject(Member member){
-        return String.valueOf(member.getId());
+    private TokenHelper.PrivateClaims createPrivateClaims(Member member){
+        return new TokenHelper.PrivateClaims(
+                String.valueOf(member.getId()),
+                member.getRoles().stream()
+                        .map(memberRole -> memberRole.getRole())
+                        .map(role -> role.getRoleType())
+                        .map(roleType -> roleType.toString())
+                        .collect(Collectors.toList())
+        );
     }
-
 }
