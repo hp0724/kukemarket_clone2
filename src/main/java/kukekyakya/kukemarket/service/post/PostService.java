@@ -10,6 +10,7 @@ import kukekyakya.kukemarket.repository.member.MemberRepository;
 import kukekyakya.kukemarket.repository.post.PostRepository;
 import kukekyakya.kukemarket.service.file.FileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,6 +51,7 @@ public class PostService {
     }
 
     @Transactional
+    @PreAuthorize("@postGuard.check(#id)")
     public void delete(Long id) {
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         deleteImages(post.getImages());
@@ -60,6 +62,7 @@ public class PostService {
         images.stream().forEach(i -> fileService.delete(i.getUniqueName()));
     }
     @Transactional
+    @PreAuthorize("@postGuard.check(#id)")
     public PostUpdateResponse update(Long id, PostUpdateRequest req) {
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         Post.ImageUpdatedResult result = post.update(req);

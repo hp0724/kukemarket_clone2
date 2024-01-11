@@ -88,8 +88,7 @@ public class CategoryControllerIntegrationTest {
                         post("/api/categories")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
 
     }
     @Test
@@ -126,8 +125,7 @@ public class CategoryControllerIntegrationTest {
         Long id = categoryRepository.findAll().get(0).getId();
 
         mockMvc.perform(delete("/api/categories/{id}",id))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test

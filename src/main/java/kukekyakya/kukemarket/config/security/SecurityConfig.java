@@ -4,6 +4,7 @@ import kukekyakya.kukemarket.config.token.TokenHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    //토큰을 통해 사용자 인증을 위한 의존성
 //    private final TokenHelper accessTokenHelper;
@@ -37,17 +39,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                    .authorizeRequests() // 4
-                        .antMatchers(HttpMethod.GET,"/image/**").permitAll()
-                        //토큰 재발급이 permit all 이끼 때문에 토큰의 타입을 검증하는 불필요한 과정이 필요 없다.
-                        .antMatchers(HttpMethod.POST, "/api/sign-in", "/api/sign-up","/api/refresh-token").permitAll()
-                        .antMatchers(HttpMethod.GET, "/api/**").permitAll()
-                        .antMatchers(HttpMethod.DELETE, "/api/members/{id}/**").access("@memberGuard.check(#id)")
-                        .antMatchers(HttpMethod.POST,"/api/categories/**").hasRole("ADMIN")
-                        .antMatchers(HttpMethod.DELETE,"/api/categories/**").hasRole("ADMIN")
+                    .authorizeRequests()
+                        .antMatchers(HttpMethod.GET, "/image/**").permitAll()
+                        .antMatchers(HttpMethod.POST, "/api/sign-in", "/api/sign-up", "/api/refresh-token").permitAll()
+                        .antMatchers(HttpMethod.DELETE, "/api/members/{id}/**").authenticated()
+                        .antMatchers(HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.DELETE, "/api/categories/**").hasRole("ADMIN")
                         .antMatchers(HttpMethod.POST, "/api/posts").authenticated()
-                        .antMatchers(HttpMethod.PUT, "/api/posts/{id}").access("@postGuard.check(#id)")
-                        .antMatchers(HttpMethod.DELETE, "/api/posts/{id}").access("@postGuard.check(#id)")
+                        .antMatchers(HttpMethod.PUT, "/api/posts/{id}").authenticated()
+                        .antMatchers(HttpMethod.DELETE, "/api/posts/{id}").authenticated()
+                        .antMatchers(HttpMethod.GET, "/api/**").permitAll()
                         .anyRequest().hasAnyRole("ADMIN")
                 .and()
                     //인증된 사용자가 권한 부족 등의 사유로 인해 접근이 거부되었을 때 작동할 핸들러를 지정해줍니다.

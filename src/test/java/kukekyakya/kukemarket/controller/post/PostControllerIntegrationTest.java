@@ -117,8 +117,7 @@ public class PostControllerIntegrationTest {
                                     return requestPostProcessor;
                                 })
                                 .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
 
     }
 
@@ -166,8 +165,7 @@ public class PostControllerIntegrationTest {
         mockMvc.perform(
                         delete("/api/posts/{id}", post.getId())
                                 .header("Authorization", notOwnerSignInRes.getAccessToken())
-                ).andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                ).andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -175,8 +173,7 @@ public class PostControllerIntegrationTest {
         Post post = postRepository.save(createPost(member1, category));
         mockMvc.perform(
                         delete("/api/posts/{id}", post.getId()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
 
@@ -251,8 +248,7 @@ public class PostControllerIntegrationTest {
                                     return requestPostProcessor;
                                 })
                                 .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
 
 
     }

@@ -7,6 +7,7 @@ import kukekyakya.kukemarket.repository.member.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ public class MemberService {
     }
 
     @Transactional
+    @PreAuthorize("@memberGuard.check(#id)")
     public void delete(Long id){
         Member member = memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
         memberRepository.delete(member);

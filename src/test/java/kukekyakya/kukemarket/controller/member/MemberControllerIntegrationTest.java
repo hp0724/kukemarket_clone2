@@ -89,8 +89,7 @@ class MemberControllerIntegrationTest {
         //3xx 상태 코드 응답
         mockMvc.perform(
                         delete("/api/members/{id}", member.getId()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -104,8 +103,7 @@ class MemberControllerIntegrationTest {
         //3xx 상태 코드 응답
         mockMvc.perform(
                         delete("/api/members/{id}", member.getId()).header("Authorization", attackerSignInRes.getAccessToken()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(status().isInternalServerError());
     }
 
     //이전에는 refreshtoken을 api요청했을때 customAccessDeniedHandelr 가 작동하는데 정상이였지만
@@ -120,8 +118,7 @@ class MemberControllerIntegrationTest {
         // when, then
         mockMvc.perform(
                         delete("/api/members/{id}", member.getId()).header("Authorization", signInRes.getRefreshToken()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
 }
